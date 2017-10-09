@@ -10,41 +10,73 @@ print "this is the text file i'm inputting:", sys.argv[1]
 # put your code here
 filename = open(filename)
 
+
 def user_rating(restaurant_dict):
-    """ User enters own restaurant & rating, adds to dict """
+    """ User enters own restaurant & rating, validates entry and
+    adds to dict
+    """
+    while True:
+        prompt = raw_input("Hello. Do you want to (A) enter a rating, (B): view ratings, or (Q): Quit? ")
 
-    user_rest = raw_input("Enter new restaurant name: ")
-    user_score = raw_input("Enter its rating: ")
-    restaurant_dict[user_rest] = restaurant_dict.get(user_rest, user_score)
-
-
-
-def get_ratings(filename):
-    """ Prints restaurant and its rating """
-
-       
-    new_list = []
-    for line in filename:
-        restaurant = line.rstrip().split(":")
-        if restaurant[0:3] == "The":
-            restaurant = restaurant[3:]
-            new_list.append(restaurant)
+        if prompt.lower() == "q":
+            print "Goodbye!"
+            break
+        elif prompt.lower() == "a":
+            user_rest = raw_input("Enter new restaurant name: ")
+            user_score = int(raw_input("Enter its rating between 1 and 5: "))
+            
+            while True:
+                user_score = int(raw_input("TRy again with the rating! Enter its rating between 1 and 5: "))
+                #if int(user_score) > 6 or int(user_score) < 1:
+                if int(user_score) > 6 or int(user_score) < 1:
+                    print "Invalid! Please enter a rating between 1 and 5"
+                    continue
+                else:
+                    restaurant_dict[user_rest] = restaurant_dict.get(user_rest, user_score)
+                    print_ratings(restaurant_dict)
+                    break
+            # continue
+        elif prompt.lower() == "b":
+            print_ratings(restaurant_dict)
+            continue
         else:
-            new_list.append(restaurant)
-    new_list = sorted(new_list)
-    print new_list
+            print "Not a valid entry."
+            continue
 
-    restaurant_dict = {}
-
-    for restaurant in new_list:
-        restaurant_dict[restaurant[0]] = restaurant[-1]
-
-    user_rating(restaurant_dict)
-
+def print_ratings(restaurant_dict):
     for key, value in sorted(restaurant_dict.items()):
         print "{} is rated at {}.".format(key, value)
 
 
-get_ratings(filename)
+def get_ratings(filename):
+    """ Processes a file and sorted restaurants & rating """
+       
+    new_list = []
+    for line in filename:
+        restaurant = line.rstrip().split(":")
+        if restaurant[0][0:4] == "The ":
+            print restaurant[0][0:4]
+            w = restaurant[0][4:]
+            new_list.append([w, restaurant[1]])
+        else:
+            new_list.append(restaurant)
+    sorted_new_list = sorted(new_list)
+    #print sorted_new_list
 
+    restaurant_dict = {}
 
+    for restaurant in sorted_new_list:
+        print restaurant
+        # print restaurant[0]
+        # print restaurant[1]
+        restaurant_dict[restaurant[0]] = restaurant[-1]
+
+    return restaurant_dict
+
+restaurant_dict = get_ratings(filename)
+# user_rating(restaurant_dict)
+
+strin = "he l loasdf;alsdkfja;dlkj"
+print strin[0:4]
+strang = strin[4:]
+print strang
